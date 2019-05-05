@@ -69,6 +69,23 @@ def RunMapping(command="Map51"):
 
     """
 
+    class IPs:
+        """
+        A class for storing and updating some initial parameters.
+
+        """
+
+        LineCounter = 0     # Counts lines after a particular state.
+        State1      = None  # State1 controls some events.
+        State2      = 0     # State2 controls some events.
+        IterState   = 0     # Iteration state keeps track of the current iteration.
+
+        # Declare the final iteration and the initial conditions
+        FinalIter           = args['numOfModels']    # The total number of models that will be run.
+
+        # The first set of initial conditions, which take command line arguments
+        InitialConditions   = [args['initTemp'], args['initDens'], 1, 0.5, -1]
+
     def TypeAndPress(condition,write,press,wait):
         """
         TypeAndPress handles keyboard typing and keyboard pressing
@@ -112,9 +129,9 @@ def RunMapping(command="Map51"):
         """
 
         keyboard.write("{}".format(InitialCondition))
-        time.sleep(0.05)
+        time.sleep(0.01)
         keyboard.press_and_release('enter')
-        time.sleep(0.05)
+        time.sleep(0.01)
 
     def WaitAndWriteAndEnter(write):
         """
@@ -128,24 +145,9 @@ def RunMapping(command="Map51"):
 
         """
 
-        time.sleep(0.05)
+        time.sleep(0.01)
         keyboard.write(write)
         keyboard.press_and_release('enter')
-
-    class IPs:
-        """
-        A class for storing and updating some initial parameters.
-
-        """
-
-        LineCounter = 0     # Counts lines after a particular state.
-        State1      = None  # State1 controls some events.
-        State2      = 0     # State2 controls some events.
-        IterState   = 0     # Iteration state keeps track of the current iteration.
-
-        # Declare the final iteration and the initial conditions
-        FinalIter           = args['numOfModels']    # The total number of models that will be run.
-        InitialConditions   = [args['initTemp'], args['initDens'], 1, 0.5, -1]      # The first set of initial conditions.
 
     def InitialiseParameters():
         """
@@ -292,7 +294,7 @@ def RunMapping(command="Map51"):
                 IPs.State2 = 0
 
             # wait a small amount of time per line print from mappings
-            time.sleep(0.05)
+            time.sleep(0.01)
 
     MapLine = proc.poll()
 
