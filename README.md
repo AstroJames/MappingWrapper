@@ -35,4 +35,4 @@ run AutoMapping -numOfModels 500 -initTemp 1e5  -finalTemp 1e6  -initDens 2  -fi
 
 
 
-This code currently only changes the temperature and the density from the mapping defaults. All sources are switched off, (e.g. cosmic radiation heating), or set to the default behaviours for the code.
+This code currently only changes the temperature and the density from the mapping defaults. All sources are switched off, (e.g. cosmic radiation heating), or set to the default behaviours for the code. The code creates a log, called MappingsLog.txt, which dumps the command line output into a text file, including annotations for the current model number and the change in parameter values.

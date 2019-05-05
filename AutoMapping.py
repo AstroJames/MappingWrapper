@@ -71,7 +71,7 @@ def RunMapping(command="Map51"):
 
     class IPs:
         """
-        A class for storing and updating some initial parameters.
+        A class for storing and updating some initial parameters / variables.
 
         """
 
@@ -85,6 +85,9 @@ def RunMapping(command="Map51"):
 
         # The first set of initial conditions, which take command line arguments
         InitialConditions   = [args['initTemp'], args['initDens'], 1, 0.5, -1]
+
+        # Create a log file for the mappings output
+        MappingsLog         = open("MappingsLog.txt","w")
 
     def TypeAndPress(condition,write,press,wait):
         """
@@ -182,16 +185,51 @@ def RunMapping(command="Map51"):
         # increment the temperature for the temperature experiment
         if args['finalTemp'] is not None:
             IPs.InitialConditions[0] += (args['finalTemp'] - args['initTemp'])/(args['numOfModels']-1)
-            print("################################################ \n")
-            print("The temperature has just been updated to {}".format(IPs.InitialConditions[0]))
-            print("################################################ \n")
+            PrintAndLogOutput("Temp")
 
         # increment the density for the density experiment.
         if args['finalDens'] is not None:
             IPs.InitialConditions[1] += (args['finalDens'] - args['initDens'])/(args['numOfModels']-1)
-            print("################################################ \n")
-            print("The density has just been updated to {}".format(IPs.InitialConditions[1]))
-            print("################################################ \n")
+            PrintAndLogOutput("Dens")
+
+    def PrintAndLogOutput(type):
+        """
+        Prints out the change in value of parameters or model and the logs it into the mappingslog variable.
+        The output is MappingsLog.txt
+
+        INPUT:
+        type    - the type of input, either temp, density or the model itself
+
+        OUPUT:
+        a completed logging event of a change.
+        """
+
+        if type == "Temp":
+            print("\n\n ################################################ \n\n")
+            print(" The temperature has just been updated to {}".format(IPs.InitialConditions[0]))
+            print("\n\n ################################################ \n\n")
+
+            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+            IPs.MappingsLog.write(" The temperature has just been updated to {}".format(IPs.InitialConditions[0]))
+            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+
+        elif type == "Dens":
+            print("\n\n ################################################ \n\n")
+            print(" The density has just been updated to {}".format(IPs.InitialConditions[1]))
+            print("\n\n ################################################ \n\n")
+
+            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+            IPs.MappingsLog.write("The density has just been updated to {}".format(IPs.InitialConditions[1]))
+            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+
+        elif type == "Model":
+            print("\n\n ################################################ \n\n")
+            print(" Moving to model {} \n".format(IPs.IterState))
+            print("\n\n ################################################ \n\n")
+
+            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+            IPs.MappingsLog.write(" The model number is {}".format(IPs.IterState))
+            IPs.MappingsLog.write("\n\n ################################################ \n\n")
 
 
     # Call the mappings code using a subprocess
@@ -201,6 +239,7 @@ def RunMapping(command="Map51"):
     # or if the process has been terminated .poll()
     while True:
         output = proc.stdout.readline()
+        IPs.MappingsLog.write(output)
 
         # if nothing is being output or termination has occured, terminate
         if output == '' and proc.poll() is not None:
@@ -232,8 +271,9 @@ def RunMapping(command="Map51"):
                         # update the initial coniditions for the next model
                         UpdateICs()
 
-                    # Increase the interstate by one.
+                    # Increase the iterstate by one.
                     IPs.IterState += 1
+                    PrintAndLogOutput("Model")
                 else:
                     # EXIT the mappings code after the iterstate > final iterstate
                     WaitAndWriteAndEnter("Exit")
@@ -297,6 +337,7 @@ def RunMapping(command="Map51"):
             time.sleep(0.01)
 
     MapLine = proc.poll()
+    IPs.MappingsLog.close()
 
     return MapLine
 
