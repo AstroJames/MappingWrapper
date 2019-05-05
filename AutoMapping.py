@@ -204,32 +204,46 @@ def RunMapping(command="Map51"):
         a completed logging event of a change.
         """
 
-        if type == "Temp":
-            print("\n\n ################################################ \n\n")
-            print(" The temperature has just been updated to {}".format(IPs.InitialConditions[0]))
-            print("\n\n ################################################ \n\n")
+        L1 = "\n\n ################################################ \n\n"
 
-            IPs.MappingsLog.write("\n\n ################################################ \n\n")
-            IPs.MappingsLog.write(" The temperature has just been updated to {}".format(IPs.InitialConditions[0]))
-            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+        if type == "Temp":
+            T1      = " The temperature has just been updated to {}".format(IPs.InitialConditions[0])
+
+            # print the temperature change
+            print(L1)
+            print(T1)
+            print(L1)
+
+            # log the temperature change
+            IPs.MappingsLog.write(L1)
+            IPs.MappingsLog.write(T1)
+            IPs.MappingsLog.write(L1)
 
         elif type == "Dens":
-            print("\n\n ################################################ \n\n")
-            print(" The density has just been updated to {}".format(IPs.InitialConditions[1]))
-            print("\n\n ################################################ \n\n")
+            D1 = " The density has just been updated to {}".format(IPs.InitialConditions[1])
 
-            IPs.MappingsLog.write("\n\n ################################################ \n\n")
-            IPs.MappingsLog.write("The density has just been updated to {}".format(IPs.InitialConditions[1]))
-            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+            # print the density change
+            print(L1)
+            print(D1)
+            print(L1)
+
+            # log the density change
+            IPs.MappingsLog.write(L1)
+            IPs.MappingsLog.write(D1)
+            IPs.MappingsLog.write(L1)
 
         elif type == "Model":
-            print("\n\n ################################################ \n\n")
-            print(" Moving to model {} \n".format(IPs.IterState))
-            print("\n\n ################################################ \n\n")
+            M1 = " Moving to model {} \n".format(IPs.IterState)
 
-            IPs.MappingsLog.write("\n\n ################################################ \n\n")
-            IPs.MappingsLog.write(" The model number is {}".format(IPs.IterState))
-            IPs.MappingsLog.write("\n\n ################################################ \n\n")
+            # print the model change
+            print(L1)
+            print(M1)
+            print(L1)
+
+            # log the density change
+            IPs.MappingsLog.write(L1)
+            IPs.MappingsLog.write(M1)
+            IPs.MappingsLog.write(L1)
 
 
     # Call the mappings code using a subprocess
