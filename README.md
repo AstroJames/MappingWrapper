@@ -25,7 +25,7 @@ Changing the temperature from 1e5 to 1e6 with constant density = 1:
 run AutoMapping -numOfModels 500 -initTemp 1e5  -finalTemp 1e6
 ```
 
-The increment to update the density is calculated, (finalTemp - initTemp) / (numOfModels-1), hence the increment for the density in the above example is ~ 2000[K].
+The increment to update the temperature is calculated, (finalTemp - initTemp) / (numOfModels-1), hence the increment for the temperature in the above example is ~ 2000[K].
 
 Changing the temperature from 1e5 to 1e6 with density changing from 2 to 10:
 
@@ -33,7 +33,6 @@ Changing the temperature from 1e5 to 1e6 with density changing from 2 to 10:
 run AutoMapping -numOfModels 500 -initTemp 1e5  -finalTemp 1e6  -initDens 2  -finalDens 10
 ```
 
-The increment to update the density is calculated, (finalTemp - initTemp) / (numOfModels-1), hence the increment for the density in the above example is ~ 2000[K].
 
 
 This code currently only changes the temperature and the density from the mapping defaults. All sources are switched off, (e.g. cosmic radiation heating), or set to the default behaviours for the code.
