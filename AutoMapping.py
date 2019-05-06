@@ -22,6 +22,7 @@ from subprocess import PIPE     # for accessing the mapping output
 import keyboard                 # using the keyboard, requires python to have permissions
 import time                     # for waiting between events, otherwise Python is too fast for mapping
 import argparse                 # command line arguments
+import os                       # accessing bash commands
 
 # Command Line Arguments
 #####################################################################################################
@@ -130,11 +131,11 @@ def RunMapping(command="Map51"):
         a completed initial conditions event.
 
         """
-
+        time.sleep(0.08)
         keyboard.write("{}".format(InitialCondition))
-        time.sleep(0.01)
+        time.sleep(0.08)
         keyboard.press_and_release('enter')
-        time.sleep(0.01)
+        time.sleep(0.08)
 
     def WaitAndWriteAndEnter(write):
         """
@@ -148,9 +149,11 @@ def RunMapping(command="Map51"):
 
         """
 
-        time.sleep(0.01)
+        time.sleep(0.08)
         keyboard.write(write)
+        time.sleep(0.08)
         keyboard.press_and_release('enter')
+        time.sleep(0.08)
 
     def InitialiseParameters():
         """
@@ -315,7 +318,6 @@ def RunMapping(command="Map51"):
 
             # This handles the initial conditions event
             if IPs.LineCounter == 2 and IPs.State1 == "InitialConditions":
-                time.sleep(0.05)
                 WaitAndEnterAndWait(IPs.InitialConditions[0])
                 WaitAndEnterAndWait(IPs.InitialConditions[1])
                 WaitAndEnterAndWait(IPs.InitialConditions[2])
@@ -331,7 +333,7 @@ def RunMapping(command="Map51"):
             TypeAndPress("X : eXit with current balance","X","enter",0)
             TypeAndPress("X  :   eXit with current source","X","enter",0)
             TypeAndPress("X   0.00       0.00   0.00   0.00   0.00   0.00      0.00      0.00",None,"enter",0)
-            TypeAndPress("Spectrum printout required? (y/n)","y","enter",0)
+            TypeAndPress("Spectrum printout required? (y/n)","y","enter",0.08)
             TypeAndPress("Give a name/code for this run:","Experiment_{}".format(IPs.IterState),"enter",0)
 
             # Start counting after the line counter has been set off
@@ -356,3 +358,4 @@ def RunMapping(command="Map51"):
     return MapLine
 
 RunMapping()
+os.system("rm slb* | rm sls* | rm slf*")
