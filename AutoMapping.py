@@ -131,11 +131,11 @@ def RunMapping(command="Map51"):
         a completed initial conditions event.
 
         """
-        time.sleep(0.08)
+        time.sleep(0.1)
         keyboard.write("{}".format(InitialCondition))
-        time.sleep(0.08)
+        time.sleep(0.1)
         keyboard.press_and_release('enter')
-        time.sleep(0.08)
+        time.sleep(0.1)
 
     def WaitAndWriteAndEnter(write):
         """
@@ -149,11 +149,11 @@ def RunMapping(command="Map51"):
 
         """
 
-        time.sleep(0.08)
+        time.sleep(0.1)
         keyboard.write(write)
-        time.sleep(0.08)
+        time.sleep(0.1)
         keyboard.press_and_release('enter')
-        time.sleep(0.08)
+        time.sleep(0.1)
 
     def InitialiseParameters():
         """
@@ -333,8 +333,8 @@ def RunMapping(command="Map51"):
             TypeAndPress("X : eXit with current balance","X","enter",0)
             TypeAndPress("X  :   eXit with current source","X","enter",0)
             TypeAndPress("X   0.00       0.00   0.00   0.00   0.00   0.00      0.00      0.00",None,"enter",0)
-            TypeAndPress("Spectrum printout required? (y/n)","y","enter",0.08)
-            TypeAndPress("Give a name/code for this run:","Experiment_{}".format(IPs.IterState),"enter",0)
+            TypeAndPress("Spectrum printout required? (y/n)","y","enter",0.1)
+            TypeAndPress("Give a name/code for this run:","Experiment_{}".format(IPs.IterState),"enter",0.05)
 
             # Start counting after the line counter has been set off
             if IPs.LineCounter >= 1:
@@ -350,7 +350,7 @@ def RunMapping(command="Map51"):
                 IPs.State2 = 0
 
             # wait a small amount of time per line print from mappings
-            time.sleep(0.01)
+            time.sleep(0.06)
 
     MapLine = proc.poll()
     IPs.MappingsLog.close()
