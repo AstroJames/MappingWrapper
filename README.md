@@ -1,8 +1,8 @@
 # Mapping Wrapper
 
-A wrapper for batch processing the Mapping code, which takes command lines arugments to change either the density or the electron temperature.
+A wrapper for batch processing the Mapping code, which takes command lines arugments to change either the density or the electron temperature. Only works for Python 2.7
 
-## Example Command Line Arguments (in IPython)
+## Example Command Line Arguments (in IPython 2.7)
 
 Using default values T = 1e4, and density = 1, for 50 models (which doesn't make sense because they would be the same):
 
