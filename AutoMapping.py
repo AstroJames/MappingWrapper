@@ -23,6 +23,7 @@ import keyboard                 # using the keyboard, requires python to have pe
 import time                     # for waiting between events, otherwise Python is too fast for mapping
 import argparse                 # command line arguments
 import os                       # accessing bash commands
+import numpy as np
 
 # Command Line Arguments
 #####################################################################################################
@@ -76,10 +77,11 @@ def RunMapping(command="Map51"):
 
         """
 
-        LineCounter = 0     # Counts lines after a particular state.
-        State1      = None  # State1 controls some events.
-        State2      = 0     # State2 controls some events.
-        IterState   = 0     # Iteration state keeps track of the current iteration.
+        LineCounter         = 0     # Counts lines after a particular state.
+        State1              = None  # State1 controls some events.
+        State2              = 0     # State2 controls some events.
+        IterState           = 0     # Iteration state keeps track of the current iteration.
+        IonisationCount     = 0     # Ionisation counter
 
         # Declare the final iteration and the initial conditions
         FinalIter           = args['numOfModels']    # The total number of models that will be run.
@@ -89,6 +91,7 @@ def RunMapping(command="Map51"):
 
         # Create a log file for the mappings output
         MappingsLog         = open("MappingsLog.txt","w")
+
 
     def TypeAndPress(condition,write,press,wait):
         """
@@ -107,6 +110,9 @@ def RunMapping(command="Map51"):
 
         """
 
+        if condition == "X : eXit with current balance" and IPs.IonisationCount == 1:
+            return
+
         if write is not None:
             if output.strip() == condition:
                 time.sleep(wait)
@@ -117,6 +123,42 @@ def RunMapping(command="Map51"):
             if output.strip() == condition:
                 time.sleep(wait)
                 keyboard.press_and_release(press)
+
+    def ChangeIonisation(wait):
+        """
+        TypeAndPress handles keyboard typing and keyboard pressing
+        events.
+
+        INPUTS:
+        condition   - the read condition coming from mapping, e.g. 'Include cosmic ray heating? (Y/N):'
+                    is read then press X and write Y.
+        write       - what needs to be written from the keyboard
+        press       - they key that is pressed e.g. 'enter'
+        wait        - how long the wrapper needs to wait between events.
+
+        OUTPUTS:
+        a completed event.
+
+        """
+        if output.strip() == "X : eXit with current balance" and IPs.IonisationCount == 0:
+            time.sleep(wait)
+            keyboard.write("A") # Fixed degree of ionisation at given temp
+            time.sleep(wait)
+            keyboard.press_and_release("enter")
+            time.sleep(wait)
+            keyboard.write("F") # Fixed degree of ionisation at given temp
+            time.sleep(wait)
+            keyboard.press_and_release("enter")
+            time.sleep(wait)
+            keyboard.write("Ass2") # Fixed degree of ionisation at given temp
+            time.sleep(wait)
+            keyboard.press_and_release("enter")
+            time.sleep(wait)
+            keyboard.write("X") # Fixed degree of ionisation at given temp
+            time.sleep(wait)
+            keyboard.press_and_release("enter")
+            IPs.IonisationCount = 1
+
 
     def WaitAndEnterAndWait(InitialCondition):
         """
@@ -185,15 +227,21 @@ def RunMapping(command="Map51"):
 
         """
 
+
         # increment the temperature for the temperature experiment
         if args['finalTemp'] is not None:
-            IPs.InitialConditions[0] += (args['finalTemp'] - args['initTemp'])/(args['numOfModels']-1)
+            TempDomain                  = np.logspace(np.log10(args['initTemp']),np.log10(args['finalTemp']),args['numOfModels'])
+            IPs.InitialConditions[0]    = TempDomain[IPs.IterState]
             PrintAndLogOutput("Temp")
 
         # increment the density for the density experiment.
         if args['finalDens'] is not None:
-            IPs.InitialConditions[1] += (args['finalDens'] - args['initDens'])/(args['numOfModels']-1)
+            DensDomain                  = np.logspace(np.log10(args['initDens']),np.log10(args['finalDens']),args['numOfModels'])
+            IPs.InitialConditions[1]    = DensDomain[IPs.IterState]
             PrintAndLogOutput("Dens")
+
+        # Update the ionisation counter
+        IPs.IonisationCount = 0
 
     def PrintAndLogOutput(type):
         """
@@ -330,7 +378,7 @@ def RunMapping(command="Map51"):
             TypeAndPress("Change Abundance Offsets (y/N)? :","No","enter",0)
             TypeAndPress("Dust is currently disabled.","No","enter",0)
             TypeAndPress("F :  Time dependent ionisation and temperature.","A","enter",0)
-            TypeAndPress("X : eXit with current balance","X","enter",0)
+            ChangeIonisation(0.05)
             TypeAndPress("X  :   eXit with current source","X","enter",0)
             TypeAndPress("X   0.00       0.00   0.00   0.00   0.00   0.00      0.00      0.00",None,"enter",0)
             TypeAndPress("Spectrum printout required? (y/n)","y","enter",0.1)
@@ -346,11 +394,12 @@ def RunMapping(command="Map51"):
                 IPs.LineCounter = 0
 
             # Reset one of the states if it gets larger than 2
+
             if IPs.State2 == 2:
                 IPs.State2 = 0
 
             # wait a small amount of time per line print from mappings
-            time.sleep(0.06)
+            time.sleep(0.02)
 
     MapLine = proc.poll()
     IPs.MappingsLog.close()
